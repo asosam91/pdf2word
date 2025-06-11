@@ -28,6 +28,7 @@ from docx import Document  # type: ignore
 from docx.shared import Pt, Inches
 from docx.oxml.ns import qn
 from docx.enum.shape import WD_INLINE_SHAPE
+from docx.enum.text import WD_ALIGN_PARAGRAPH
 
 
 def _notify(msg: str) -> None:
@@ -157,12 +158,21 @@ def _apply_format(doc: Document, font: str, size: float, spacing: float, margin:
         _clear_header_footer(sect.header)
         _clear_header_footer(sect.footer)
 
-    for para in doc.paragraphs:
-        para.paragraph_format.line_spacing = spacing
-        for run in para.runs:
-            run.font.name = font
-            run.font.size = Pt(size)
-            run._element.rPr.rFonts.set(qn("w:eastAsia"), font)
+    def _format_paragraphs(paragraphs):
+        for para in paragraphs:
+            para.paragraph_format.line_spacing = spacing
+            para.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+            for run in para.runs:
+                run.font.name = font
+                run.font.size = Pt(size)
+                run._element.rPr.rFonts.set(qn("w:eastAsia"), font)
+
+    _format_paragraphs(doc.paragraphs)
+
+    for table in doc.tables:
+        for row in table.rows:
+            for cell in row.cells:
+                _format_paragraphs(cell.paragraphs)
 
 
 def _postprocess(docx: Path, font: str, size: float, spacing: float, margin: float, keep_charts_only: bool) -> None:
