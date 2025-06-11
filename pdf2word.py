@@ -180,7 +180,11 @@ def _postprocess(docx: Path, font: str, size: float, spacing: float, margin: flo
 # ────────────────────────────────────────────────────────────────────────
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Convertir un PDF a Word y exportar gráficas")
+
+    ap = argparse.ArgumentParser(
+        description="Convertir un PDF a Word y exportar gráficas",
+        add_help=False,
+    )
     ap.add_argument("pdf", nargs="?", type=Path, help="Archivo PDF de entrada")
     ap.add_argument("--include-all-images", action="store_true", help="No filtrar imágenes")
     ap.add_argument("--font", default="Calibri", help="Fuente a usar")
