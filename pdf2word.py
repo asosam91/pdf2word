@@ -180,6 +180,7 @@ def _postprocess(docx: Path, font: str, size: float, spacing: float, margin: flo
 # ────────────────────────────────────────────────────────────────────────
 
 def main() -> None:
+
     ap = argparse.ArgumentParser(
         description="Convertir un PDF a Word y exportar gráficas",
         add_help=False,
